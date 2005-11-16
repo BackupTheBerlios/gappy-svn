@@ -69,9 +69,17 @@ def main():
     try:
         action = args[0]
     except IndexError:
-        print_error("An action is required.", sys.argv[0])
+        parser.print_usage_and_exit()
     if not ACTION_MAPPING.has_key(action):
         print_error("Your action, %r, was invalid." % action, sys.argv[0])
+
+    # switch to english, because django-admin creates database content
+    # like permissions, and those shouldn't contain any translations.
+    # But only do this if we should have a working settings file.
+    if action not in ('startproject', 'startapp'):
+        from django.utils import translation
+        translation.activate('en-us')
+
     if action in ('createsuperuser', 'init', 'validate'):
         ACTION_MAPPING[action]()
     elif action == 'inspectdb':
@@ -129,3 +137,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

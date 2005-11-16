@@ -1,8 +1,6 @@
 from django.conf import settings
-from django.core import exceptions
 from django.utils import httpwrappers
 from django.core.mail import mail_managers
-from django.views.core.flatfiles import flat_file
 import md5, os
 
 class CommonMiddleware:
@@ -11,16 +9,12 @@ class CommonMiddleware:
 
         - Forbids access to User-Agents in settings.DISALLOWED_USER_AGENTS
 
-        - URL rewriting: based on the APPEND_SLASH and PREPEND_WWW settings,
-          this middleware will -- shocking, isn't it -- append missing slashes
-          and/or prepend missing "www."s.
+        - URL rewriting: Based on the APPEND_SLASH and PREPEND_WWW settings,
+          this middleware appends missing slashes and/or prepends missing "www."s.
 
-        - ETags: if the USE_ETAGS setting is set, ETags will be calculated from
+        - ETags: If the USE_ETAGS setting is set, ETags will be calculated from
           the entire page content and Not Modified responses will be returned
           appropriately.
-
-        - Flat files: for 404 responses, a flat file matching the given path
-          will be looked up and used if found.
     """
 
     def process_request(self, request):
@@ -56,12 +50,6 @@ class CommonMiddleware:
     def process_response(self, request, response):
         "Check for a flat page (for 404s) and calculate the Etag, if needed."
         if response.status_code == 404:
-            if settings.USE_FLAT_PAGES:
-                try:
-                    return flat_file(request, request.path)
-                except exceptions.Http404:
-                    pass
-
             if settings.SEND_BROKEN_LINK_EMAILS:
                 # If the referrer was from an internal link or a non-search-engine site,
                 # send a note to the managers.

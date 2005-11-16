@@ -24,7 +24,7 @@ class DatabaseWrapper:
             if DATABASE_USER:
                 conn_string = "user=%s %s" % (DATABASE_USER, conn_string)
             if DATABASE_PASSWORD:
-                conn_string += " password=%s" % DATABASE_PASSWORD
+                conn_string += " password='%s'" % DATABASE_PASSWORD
             if DATABASE_HOST:
                 conn_string += " host=%s" % DATABASE_HOST
             if DATABASE_PORT:
@@ -48,6 +48,11 @@ class DatabaseWrapper:
         if self.connection is not None:
             self.connection.close()
             self.connection = None
+
+    def quote_name(self, name):
+        if name.startswith('"') and name.endswith('"'):
+            return name # Quoting once is enough.
+        return '"%s"' % name
 
 def dictfetchone(cursor):
     "Returns a row from the cursor as a dict"
@@ -116,11 +121,6 @@ def get_relations(cursor, table_name):
             continue
     return relations
 
-def quote_name(name):
-    if name.startswith('"') and name.endswith('"'):
-        return name # Quoting once is enough.
-    return '"%s"' % name
-
 # Register these custom typecasts, because Django expects dates/times to be
 # in Python's native (standard-library) datetime/time format, whereas psycopg
 # use mx.DateTime by default.
@@ -170,8 +170,8 @@ DATA_TYPES = {
     'NullBooleanField':  'boolean',
     'OneToOneField':     'integer',
     'PhoneNumberField':  'varchar(20)',
-    'PositiveIntegerField': 'integer CHECK (%(name)s >= 0)',
-    'PositiveSmallIntegerField': 'smallint CHECK (%(name)s >= 0)',
+    'PositiveIntegerField': 'integer CHECK (%(column)s >= 0)',
+    'PositiveSmallIntegerField': 'smallint CHECK (%(column)s >= 0)',
     'SlugField':         'varchar(50)',
     'SmallIntegerField': 'smallint',
     'TextField':         'text',

@@ -11,6 +11,7 @@ from django.utils.html import strip_tags
 from django.utils.httpwrappers import HttpResponse, HttpResponseRedirect
 from django.utils.text import capfirst, get_text_list
 from django.conf.settings import ADMIN_MEDIA_PREFIX
+from django.utils.translation import get_date_formats
 import operator
 
 # Text to display within changelist table cells if the value is blank.
@@ -135,17 +136,20 @@ def change_list(request, app_label, module_name):
         f = lookup_opts.get_field(order_field)
         rel_ordering = f.rel.to.ordering and f.rel.to.ordering[0] or f.rel.to.pk.column
         lookup_order_field = '%s.%s' % (f.rel.to.db_table, rel_ordering)
-    # Use select_related if one of the list_display options is a field with a
-    # relationship.
-    for field_name in lookup_opts.admin.list_display:
-        try:
-            f = lookup_opts.get_field(field_name)
-        except meta.FieldDoesNotExist:
-            pass
-        else:
-            if isinstance(f.rel, meta.ManyToOne):
-                lookup_params['select_related'] = True
-                break
+    if lookup_opts.admin.list_select_related:
+        lookup_params['select_related'] = True
+    else:
+        # Use select_related if one of the list_display options is a field with
+        # a relationship.
+        for field_name in lookup_opts.admin.list_display:
+            try:
+                f = lookup_opts.get_field(field_name)
+            except meta.FieldDoesNotExist:
+                pass
+            else:
+                if isinstance(f.rel, meta.ManyToOne):
+                    lookup_params['select_related'] = True
+                    break
     lookup_params['order_by'] = ((order_type == 'desc' and '-' or '') + lookup_order_field,)
     if lookup_opts.admin.search_fields and query:
         or_queries = []
@@ -211,7 +215,7 @@ def change_list(request, app_label, module_name):
                         ((lookup_val is None and ' class="selected"' or ''),
                         get_query_string(params, {}, [lookup_kwarg])))
                     for val in lookup_choices:
-                        pk_val = getattr(val, f.rel.to.pk.column)
+                        pk_val = getattr(val, f.rel.to.pk.attname)
                         filter_template.append('<li%s><a href="%s">%r</a></li>\n' % \
                             ((lookup_val == str(pk_val) and ' class="selected"' or ''),
                             get_query_string(params, {lookup_kwarg: pk_val}), val))
@@ -375,7 +379,7 @@ def change_list(request, app_label, module_name):
                         capfirst(f.verbose_name)))
         raw_template.append('</tr>\n</thead>\n')
         # Result rows.
-        pk = lookup_opts.pk.name
+        pk = lookup_opts.pk.attname
         for i, result in enumerate(result_list):
             raw_template.append('<tr class="row%s">\n' % (i % 2 + 1))
             for j, field_name in enumerate(lookup_opts.admin.list_display):
@@ -385,12 +389,18 @@ def change_list(request, app_label, module_name):
                 except meta.FieldDoesNotExist:
                     # For non-field list_display values, the value is a method
                     # name. Execute the method.
+                    func = getattr(result, field_name)
                     try:
-                        result_repr = strip_tags(str(getattr(result, field_name)()))
+                        result_repr = str(func())
                     except ObjectDoesNotExist:
                         result_repr = EMPTY_CHANGELIST_VALUE
+                    else:
+                        # Strip HTML tags in the resulting text, except if the
+                        # function has an "allow_tags" attribute set to True.
+                        if not getattr(func, 'allow_tags', False):
+                            result_repr = strip_tags(result_repr)
                 else:
-                    field_val = getattr(result, f.column)
+                    field_val = getattr(result, f.attname)
                     # Foreign-key fields are special: Use the repr of the
                     # related object.
                     if isinstance(f.rel, meta.ManyToOne):
@@ -398,13 +408,16 @@ def change_list(request, app_label, module_name):
                             result_repr = getattr(result, 'get_%s' % f.name)()
                         else:
                             result_repr = EMPTY_CHANGELIST_VALUE
-                    # Dates are special: They're formatted in a certain way.
-                    elif isinstance(f, meta.DateField):
+                    # Dates and times are special: They're formatted in a certain way.
+                    elif isinstance(f, meta.DateField) or isinstance(f, meta.TimeField):
                         if field_val:
+                            (date_format, datetime_format, time_format) = get_date_formats()
                             if isinstance(f, meta.DateTimeField):
-                                result_repr = dateformat.format(field_val, 'N j, Y, P')
+                                result_repr = capfirst(dateformat.format(field_val, datetime_format))
+                            elif isinstance(f, meta.TimeField):
+                                result_repr = capfirst(dateformat.time_format(field_val, time_format))
                             else:
-                                result_repr = dateformat.format(field_val, 'N j, Y')
+                                result_repr = capfirst(dateformat.format(field_val, date_format))
                         else:
                             result_repr = EMPTY_CHANGELIST_VALUE
                         row_class = ' class="nowrap"'
@@ -780,7 +793,7 @@ def add_stage(request, app_label, module_name, show_delete=False, form_url='', p
                     new_data.setlist(f.name, new_data[f.name].split(","))
             manipulator.do_html2python(new_data)
             new_object = manipulator.save(new_data)
-            pk_value = getattr(new_object, opts.pk.column)
+            pk_value = getattr(new_object, opts.pk.attname)
             log.log_action(request.user.id, opts.get_content_type_id(), pk_value, repr(new_object), log.ADDITION)
             msg = 'The %s "%s" was added successfully.' % (opts.verbose_name, new_object)
             # Here, we distinguish between different save types by checking for
@@ -882,7 +895,7 @@ def change_stage(request, app_label, module_name, object_id):
                     new_data.setlist(f.name, new_data[f.name].split(","))
             manipulator.do_html2python(new_data)
             new_object = manipulator.save(new_data)
-            pk_value = getattr(new_object, opts.pk.column)
+            pk_value = getattr(new_object, opts.pk.attname)
 
             # Construct the change message.
             change_message = []
@@ -920,19 +933,19 @@ def change_stage(request, app_label, module_name, object_id):
         new_data = {}
         obj = manipulator.original_object
         for f in opts.fields:
-            new_data.update(_get_flattened_data(f, getattr(obj, f.column)))
+            new_data.update(_get_flattened_data(f, getattr(obj, f.attname)))
         for f in opts.many_to_many:
             get_list_func = getattr(obj, 'get_%s_list' % f.rel.singular)
             if f.rel.raw_id_admin:
-                new_data[f.name] = ",".join([str(getattr(i, f.rel.to.pk.column)) for i in get_list_func()])
+                new_data[f.name] = ",".join([str(getattr(i, f.rel.to.pk.attname)) for i in get_list_func()])
             elif not f.rel.edit_inline:
-                new_data[f.name] = [getattr(i, f.rel.to.pk.column) for i in get_list_func()]
+                new_data[f.name] = [getattr(i, f.rel.to.pk.attname) for i in get_list_func()]
         for rel_obj, rel_field in inline_related_objects:
             var_name = rel_obj.object_name.lower()
             for i, rel_instance in enumerate(getattr(obj, 'get_%s_list' % opts.get_rel_object_method_name(rel_obj, rel_field))()):
                 for f in rel_obj.fields:
                     if f.editable and f != rel_field:
-                        for k, v in _get_flattened_data(f, getattr(rel_instance, f.column)).items():
+                        for k, v in _get_flattened_data(f, getattr(rel_instance, f.attname)).items():
                             new_data['%s.%d.%s' % (var_name, i, k)] = v
                 for f in rel_obj.many_to_many:
                     new_data['%s.%d.%s' % (var_name, i, f.column)] = [j.id for j in getattr(rel_instance, 'get_%s_list' % f.rel.singular)()]
@@ -1021,7 +1034,7 @@ def _get_deleted_objects(deleted_objects, perms_needed, user, obj, opts, current
                     # Display a link to the admin page.
                     nh(deleted_objects, current_depth, ['%s: <a href="../../../../%s/%s/%s/">%r</a>' % \
                         (capfirst(rel_opts.verbose_name), rel_opts.app_label, rel_opts.module_name,
-                        getattr(sub_obj, rel_opts.pk.column), sub_obj), []])
+                        getattr(sub_obj, rel_opts.pk.attname), sub_obj), []])
                 _get_deleted_objects(deleted_objects, perms_needed, user, sub_obj, rel_opts, current_depth+2)
         else:
             has_related_objs = False

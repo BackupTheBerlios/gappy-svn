@@ -258,6 +258,32 @@ Default: ``''`` (Empty string)
 
 The username to use when connecting to the database. Not used with SQLite.
 
+DATE_FORMAT
+-----------
+
+Default: ``'N j, Y'`` (e.g. ``Feb. 4, 2003``)
+
+The default formatting to use for date fields on Django admin change-list
+pages -- and, possibly, by other parts of the system. See
+`allowed date format strings`_.
+
+See also DATETIME_FORMAT and TIME_FORMAT.
+
+.. _allowed date format strings: http://www.djangoproject.com/documentation/templates/#now
+
+DATETIME_FORMAT
+---------------
+
+Default: ``'N j, Y, P'`` (e.g. ``Feb. 4, 2003, 4 p.m.``)
+
+The default formatting to use for datetime fields on Django admin change-list
+pages -- and, possibly, by other parts of the system. See
+`allowed date format strings`_.
+
+See also DATE_FORMAT and TIME_FORMAT.
+
+.. _allowed date format strings: http://www.djangoproject.com/documentation/templates/#now
+
 DEBUG
 -----
 
@@ -332,6 +358,17 @@ Default: ``('/cgi-bin/', '/_vti_bin', '/_vti_inf')``
 A tuple of strings that specify beginnings of URLs that should be ignored by
 the 404 e-mailer. See ``SEND_BROKEN_LINK_EMAILS`` and ``IGNORABLE_404_ENDS``.
 
+INSTALLED_APPS
+--------------
+
+Default: ``()`` (Empty tuple)
+
+A tuple of strings designating all applications that are enabled in this Django
+installation. Each string should be a full Python path to a Python package that
+contains a Django application, as created by `django-admin.py startapp`_.
+
+.. _django-admin.py startapp: http://www.djangoproject.com/documentation/django_admin/#startapp-appname
+
 INTERNAL_IPS
 ------------
 
@@ -357,7 +394,45 @@ LANGUAGE_CODE
 
 Default: ``'en-us'``
 
-A string representing the language code for this installation.
+A string representing the language code for this installation. This should be
+in standard language format. For example, U.S. English is ``"en-us"``. See the
+`internationalization docs`_.
+
+.. _internationalization docs: http://www.djangoproject.com/documentation/i18n/
+
+LANGUAGES
+---------
+
+Default: A tuple of all available languages. Currently, this is::
+
+    LANGUAGES = (
+        ('bn', _('Bengali')),
+        ('cs', _('Czech')),
+        ('cy', _('Welsh')),
+        ('da', _('Danish')),
+        ('de', _('German')),
+        ('en', _('English')),
+        ('es', _('Spanish')),
+        ('fr', _('French')),
+        ('gl', _('Galician')),
+        ('is', _('Icelandic')),
+        ('it', _('Italian')),
+        ('no', _('Norwegian')),
+        ('pt-br', _('Brazilian')),
+        ('ro', _('Romanian')),
+        ('ru', _('Russian')),
+        ('sk', _('Slovak')),
+        ('sr', _('Serbian')),
+        ('sv', _('Swedish')),
+        ('zh-cn', _('Simplified Chinese')),
+    )
+
+A tuple of two-tuples in the format (language code, language name). This
+specifies which languages are available for language selection. See the
+`internationalization docs`_ for details.
+
+Generally, the default value should suffice. Only set this setting if you want
+to restrict language selection to a subset of the Django-provided languages.
 
 MANAGERS
 --------
@@ -386,7 +461,11 @@ Example: ``"http://media.lawrence.com"``
 MIDDLEWARE_CLASSES
 ------------------
 
-Default: ``("django.middleware.sessions.SessionMiddleware", "django.middleware.common.CommonMiddleware", "django.middleware.doc.XViewMiddleware")``
+Default::
+
+    ("django.middleware.sessions.SessionMiddleware",
+     "django.middleware.common.CommonMiddleware",
+     "django.middleware.doc.XViewMiddleware")
 
 A tuple of middleware classes to use. See the `middleware docs`_.
 
@@ -454,6 +533,15 @@ See the `session docs`_.
 ``'hotclub'`` is a reference to the Hot Club of France, the band Django
 Reinhardt played in.
 
+SITE_ID
+-------
+
+Default: Not defined
+
+The ID, as an integer, of the current site in the ``sites`` database. This is
+used so that application data can hook into specific site(s) and a single
+database can manage content for multiple sites.
+
 TEMPLATE_DIRS
 -------------
 
@@ -478,6 +566,19 @@ Default: ``('django.core.template.loaders.filesystem.load_template_source',)``
 A tuple of callables (as strings) that know how to import templates from
 various sources. See the `template documentation`_.
 
+TIME_FORMAT
+-----------
+
+Default: ``'P'`` (e.g. ``4 p.m.``)
+
+The default formatting to use for time fields on Django admin change-list
+pages -- and, possibly, by other parts of the system. See
+`allowed date format strings`_.
+
+See also DATE_FORMAT and DATETIME_FORMAT.
+
+.. _allowed date format strings: http://www.djangoproject.com/documentation/templates/#now
+
 TIME_ZONE
 ---------
 
@@ -494,14 +595,6 @@ Default: ``False``
 A boolean that specifies whether to output the "Etag" header. This saves
 bandwidth but slows down performance. This is only used if ``CommonMiddleware``
 is installed (see the `middleware docs`_).
-
-USE_FLAT_PAGES
---------------
-
-Default: ``True``
-
-Whether to check the flat-pages table as a last resort for all 404 errors. This
-is only used if ``CommonMiddleware`` is installed (see the `middleware docs`_).
 
 .. _cache docs: http://www.djangoproject.com/documentation/cache/
 .. _middleware docs: http://www.djangoproject.com/documentation/middleware/

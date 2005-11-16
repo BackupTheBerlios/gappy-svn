@@ -1,4 +1,6 @@
 class AnonymousUser:
+    id = None
+
     def __init__(self):
         pass
 
@@ -30,6 +32,9 @@ class AnonymousUser:
         raise NotImplementedError
 
     def has_perm(self, perm):
+        return False
+
+    def has_module_perms(self, module):
         return False
 
     def get_and_delete_messages(self):

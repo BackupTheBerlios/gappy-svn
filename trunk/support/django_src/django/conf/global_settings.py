@@ -1,6 +1,8 @@
 # Default Django settings. Override these with settings in the module
 # pointed-to by the DJANGO_SETTINGS_MODULE environment variable.
 
+from django.utils.translation import gettext_lazy as _
+
 ####################
 # CORE             #
 ####################
@@ -28,6 +30,30 @@ TIME_ZONE = 'America/Chicago'
 # http://blogs.law.harvard.edu/tech/stories/storyReader$15
 LANGUAGE_CODE = 'en-us'
 
+# Languages we provide translations for, out of the box. The language name
+# should be the utf-8 encoded local name for the language.
+LANGUAGES = (
+    ('bn', _('Bengali')),
+    ('cs', _('Czech')),
+    ('cy', _('Welsh')),
+    ('da', _('Danish')),
+    ('de', _('German')),
+    ('en', _('English')),
+    ('es', _('Spanish')),
+    ('fr', _('French')),
+    ('gl', _('Galician')),
+    ('is', _('Icelandic')),
+    ('it', _('Italian')),
+    ('no', _('Norwegian')),
+    ('pt-br', _('Brazilian')),
+    ('ro', _('Romanian')),
+    ('ru', _('Russian')),
+    ('sk', _('Slovak')),
+    ('sr', _('Serbian')),
+    ('sv', _('Swedish')),
+    ('zh-cn', _('Simplified Chinese')),
+)
+
 # Not-necessarily-technical managers of the site. They get broken link
 # notifications and other various e-mails.
 MANAGERS = ADMINS
@@ -54,6 +80,9 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 
 # Host for sending e-mail.
 EMAIL_HOST = 'localhost'
+
+# List of strings representing installed apps.
+INSTALLED_APPS = ()
 
 # List of locations of the template source files, in search order.
 TEMPLATE_DIRS = ()
@@ -112,9 +141,6 @@ ALLOWED_INCLUDE_ROOTS = ()
 # is an admin.
 ADMIN_FOR = ()
 
-# Whether to check the flat-pages table as a last resort for all 404 errors.
-USE_FLAT_PAGES = True
-
 # 404s that may be ignored.
 IGNORABLE_404_STARTS = ('/cgi-bin/', '/_vti_bin', '/_vti_inf')
 IGNORABLE_404_ENDS = ('mail.pl', 'mailform.pl', 'mail.cgi', 'mailform.cgi', 'favicon.ico', '.php')
@@ -126,6 +152,26 @@ SECRET_KEY = ''
 
 # Path to the "jing" executable -- needed to validate XMLFields
 JING_PATH = "/usr/bin/jing"
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = ''
+
+# URL that handles the media served from MEDIA_ROOT.
+# Example: "http://media.lawrence.com"
+MEDIA_URL = ''
+
+# Default formatting for date objects. See all available format strings here:
+# http://www.djangoproject.com/documentation/templates/#now
+DATE_FORMAT = 'N j, Y'
+
+# Default formatting for datetime objects. See all available format strings here:
+# http://www.djangoproject.com/documentation/templates/#now
+DATETIME_FORMAT = 'N j, Y, P'
+
+# Default formatting for time objects. See all available format strings here:
+# http://www.djangoproject.com/documentation/templates/#now
+TIME_FORMAT = 'P'
 
 ##############
 # MIDDLEWARE #
@@ -184,11 +230,3 @@ COMMENTS_FIRST_FEW = 0
 # A tuple of IP addresses that have been banned from participating in various
 # Django-powered features.
 BANNED_IPS = ()
-
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
-
-# URL that handles the media served from MEDIA_ROOT.
-# Example: "http://media.lawrence.com"
-MEDIA_URL = ''

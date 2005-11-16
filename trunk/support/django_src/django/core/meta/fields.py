@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.core import formfields, validators
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.functional import curry
+from django.utils.functional import curry, lazy
 from django.utils.text import capfirst
+from django.utils.translation import gettext_lazy
 import datetime, os
 
 # Random entropy string used by "default" param.
@@ -26,6 +27,16 @@ prep_for_like_query = lambda x: str(x).replace("%", "\%").replace("_", "\_")
 # returns the <ul> class for a given radio_admin value
 get_ul_class = lambda x: 'radiolist%s' % ((x == HORIZONTAL) and ' inline' or '')
 
+def string_concat(*strings):
+    """"
+    lazy variant of string concatenation, needed for translations that are
+    constructed from multiple parts. Handles lazy strings and non-strings by
+    first turning all arguments to strings, before joining them.
+    """
+    return ''.join([str(el) for el in strings])
+
+string_concat = lazy(string_concat, str)
+
 def manipulator_valid_rel_key(f, self, field_data, all_data):
     "Validates that the value is a valid foreign key"
     mod = f.rel.to.get_model_module()
@@ -44,9 +55,25 @@ def manipulator_validator_unique(f, opts, self, field_data, all_data):
         old_obj = opts.get_model_module().get_object(**{'%s__%s' % (f.name, lookup_type): field_data})
     except ObjectDoesNotExist:
         return
-    if hasattr(self, 'original_object') and getattr(self.original_object, opts.pk.column) == getattr(old_obj, opts.pk.column):
+    if hasattr(self, 'original_object') and getattr(self.original_object, opts.pk.attname) == getattr(old_obj, opts.pk.attname):
         return
     raise validators.ValidationError, "%s with this %s already exists." % (capfirst(opts.verbose_name), f.verbose_name)
+
+
+# A guide to Field parameters:
+#
+#   * name:      The name of the field specifed in the model.
+#   * attname:   The attribute to use on the model object. This is the same as
+#                "name", except in the case of ForeignKeys, where "_id" is
+#                appended.
+#   * db_column: The db_column specified in the model (or None).
+#   * column:    The database column for this field. This is the same as
+#                "attname", except if db_column is specified.
+#
+# Code that introspects values, or does other dynamic things, should use
+# attname. For example, this gets the primary key value of object "obj":
+#
+#     getattr(obj, opts.pk.attname)
 
 class Field(object):
 
@@ -80,9 +107,11 @@ class Field(object):
         self.db_column = db_column
         if rel and isinstance(rel, ManyToMany):
             if rel.raw_id_admin:
-                self.help_text += ' Separate multiple IDs with commas.'
+                self.help_text = string_concat(self.help_text,
+                    gettext_lazy(' Separate multiple IDs with commas.'))
             else:
-                self.help_text += ' Hold down "Control", or "Command" on a Mac, to select more than one.'
+                self.help_text = string_concat(self.help_text,
+                    gettext_lazy(' Hold down "Control", or "Command" on a Mac, to select more than one.'))
 
         # Set db_index to True if the field has a relationship and doesn't explicitly set db_index.
         if db_index is None:
@@ -97,19 +126,20 @@ class Field(object):
         self.creation_counter = Field.creation_counter
         Field.creation_counter += 1
 
-        # Set the name of the database column.
-        self.column = self.get_db_column()
+        self.attname, self.column = self.get_attname_column()
 
     def set_name(self, name):
         self.name = name
         self.verbose_name = self.verbose_name or name.replace('_', ' ')
-        self.column = self.get_db_column()
+        self.attname, self.column = self.get_attname_column()
 
-    def get_db_column(self):
-        if self.db_column: return self.db_column
+    def get_attname_column(self):
         if isinstance(self.rel, ManyToOne):
-            return '%s_id' % self.name
-        return self.name
+            attname = '%s_id' % self.name
+        else:
+            attname = self.name
+        column = self.db_column or attname
+        return attname, column
 
     def get_cache_name(self):
         return '_%s_cache' % self.name
@@ -264,7 +294,7 @@ class Field(object):
         if self.choices:
             return first_choice + list(self.choices)
         rel_obj = self.rel.to
-        return first_choice + [(getattr(x, rel_obj.pk.column), repr(x)) for x in rel_obj.get_model_module().get_list(**self.rel.limit_choices_to)]
+        return first_choice + [(getattr(x, rel_obj.pk.attname), repr(x)) for x in rel_obj.get_model_module().get_list(**self.rel.limit_choices_to)]
 
 class AutoField(Field):
     empty_strings_allowed = False
@@ -717,7 +747,7 @@ class OneToOne(ManyToOne):
 
 class Admin:
     def __init__(self, fields=None, js=None, list_display=None, list_filter=None, date_hierarchy=None,
-        save_as=False, ordering=None, search_fields=None, save_on_top=False):
+        save_as=False, ordering=None, search_fields=None, save_on_top=False, list_select_related=False):
         self.fields = fields
         self.js = js or []
         self.list_display = list_display or ['__repr__']
@@ -726,6 +756,7 @@ class Admin:
         self.save_as, self.ordering = save_as, ordering
         self.search_fields = search_fields or []
         self.save_on_top = save_on_top
+        self.list_select_related = list_select_related
 
     def get_field_objs(self, opts):
         """

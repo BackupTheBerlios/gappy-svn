@@ -77,6 +77,11 @@ class DatabaseWrapper:
             self.connection.close()
             self.connection = None
 
+    def quote_name(self, name):
+        if name.startswith('[') and name.endswith(']'):
+            return name # Quoting once is enough.
+        return '[%s]' % name
+
 def get_last_insert_id(cursor, table_name, pk_name):
     cursor.execute("SELECT %s FROM %s WHERE %s = @@IDENTITY" % (pk_name, table_name, pk_name))
     return cursor.fetchone()[0]
@@ -109,10 +114,6 @@ def get_table_list(cursor):
 
 def get_relations(cursor, table_name):
     raise NotImplementedError
-
-def quote_name(name):
-    # TODO: Figure out how MS-SQL quotes database identifiers.
-    return name
 
 OPERATOR_MAPPING = {
     'exact': '=',
@@ -148,8 +149,8 @@ DATA_TYPES = {
     'NullBooleanField':  'bit',
     'OneToOneField':     'int',
     'PhoneNumberField':  'varchar(20)',
-    'PositiveIntegerField': 'int CONSTRAINT [CK_int_pos_%(name)s] CHECK ([%(name)s] > 0)',
-    'PositiveSmallIntegerField': 'smallint CONSTRAINT [CK_smallint_pos_%(name)s] CHECK ([%(name)s] > 0)',
+    'PositiveIntegerField': 'int CONSTRAINT [CK_int_pos_%(column)s] CHECK ([%(column)s] > 0)',
+    'PositiveSmallIntegerField': 'smallint CONSTRAINT [CK_smallint_pos_%(column)s] CHECK ([%(column)s] > 0)',
     'SlugField':         'varchar(50)',
     'SmallIntegerField': 'smallint',
     'TextField':         'text',
