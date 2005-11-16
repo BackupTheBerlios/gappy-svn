@@ -1,0 +1,62 @@
+#header
+{  
+	text-align:left;
+}
+
+h1, h2
+{
+    text-align:center;
+    color:rgb(53,148,35);
+}
+
+h1
+{
+    margin-bottom:0px;
+    padding-bottom:0px;
+}
+
+h2
+{
+    margin-top:0px;
+    padding-top:0px;
+
+}
+
+.main_content
+{
+    background:rgb(222,193,205);
+    border: thin solid rgb(53,148,35);
+    margin-left:15%;
+    margin-right:15%;
+}
+
+#classes
+{
+    display:inline;
+    float:left;
+}
+
+#demos
+{
+    display:inline;
+    float:right; 
+}
+
+
+#appointments h3, #classes h3, #demos h3
+{
+    text-align:center;
+}
+
+.input_box
+{
+	background: white url(input_box_bg.gif) top left repeat-x;
+	border-width:1px;
+	border-style: solid;
+	border-bottom-color: #8bbc82;
+	border-left-color: rgb(53,148,35);
+	border-right-color: #8bbc82;
+	border-top-color: rgb(53,148,35);
+	color:#005500;
+	padding-left:5px;
+}
