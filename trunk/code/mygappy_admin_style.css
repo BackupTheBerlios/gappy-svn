@@ -24,7 +24,7 @@ h2
 
 .main_content
 {
-    background:rgb(222,193,205);
+    background:rgb(128,247,105);
     border: thin solid rgb(53,148,35);
     margin-left:15%;
     margin-right:15%;
@@ -32,14 +32,12 @@ h2
 
 #classes
 {
-    display:inline;
-    float:left;
+    background:rgb(231,230,205);
 }
 
 #demos
 {
-    display:inline;
-    float:right; 
+    background:rgb(222,193,205);
 }
 
 
