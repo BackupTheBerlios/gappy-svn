@@ -1,147 +1,136 @@
+
 <html>
-    <head>
-        <title>GAPPy Functional Specification</title>
-    </head>
-    <body>
-        
-        <h1 id="group_appointment_calendar_for_python">Group Appointment Calendar for Python</h1>
+  <head><title>spec.txt</title></head>
+  <body>
+<h1>Group Appointment Calendar for Python</h1>
 
-        <h2 id="overview">Overview</h2>
+<h2>Overview</h2>
 
-        <p>The Group Appointment Calendar for Python aims to provide a mechanism for
-        students to schedule demo appointments with instructors. Teachers or TAs make
-        a list of times for which they are available, and then students in groups sign
-        up to come to a given appointment.</p>
+<p>The Group Appointment Calendar for Python aims to provide a mechanism for
+students to schedule demo appointments with instructors. Teachers or TAs make
+a list of times for which they are available, and then students in groups sign
+up to come to a given appointment.</p>
 
-        <h2 id="major_features">Major Features</h2>
+<h2>Major Features</h2>
 
-        <ul>
-        <li>Students can be formed into groups that set up a single appointment time</li>
-        <li>Data can be stored in any SQL-compliant database back-end to provide
-        reliability and interoperability with third-party clients</li>
-        <li>Web-based front-end ensures universal accessibility from anywhere on
-        campus</li>
-        <li>Low system requirements ensure that even junked PCs  can be used as a host</li>
-        <li>Python-powered core using the <a href="http://www.opensource.org/licenses/bsd-license.php" title="Berkeley System Design License">Django</a> framework for fast development
-        and easy extendibility</li>
-        </ul>
+<ul>
+<li>Students can be formed into groups that set up a single appointment time</li>
+<li>Data can be stored in any SQL-compliant database back-end to provide
+reliability and interoperability with third-party clients</li>
+<li>Web-based front-end ensures universal accessibility from anywhere on
+campus</li>
+<li>Low system requirements ensure that even junked PCs  can be used as a host</li>
+<li>Python-powered core using the <a href="http://www.opensource.org/licenses/bsd-license.php" title="Berkeley System Design License">Django</a> framework for fast development
+and easy extendibility</li>
+</ul>
 
-        <h2 id="design_goals">Design Goals</h2>
+<h2>Design Goals</h2>
 
-        <p>Because this is an instructional product, we have a slightly different focus
-        than normal. Our primary design goal is <strong>keep it simple</strong>. This is not a
-        programming course, but rather an opportunity to get involved in and launch an
-        open-source project. As such, stay focused on the learning and not on the
-        feature set. The other primary goal for this product is to make the product as
-        easy-to-use as possible. This may well mean eschewing features in favor of
-        simple, straightforward design and user interface. That's a good thing. Enjoy
-        it.</p>
+<p>Because this is an instructional product, we have a slightly different focus
+than normal. Our primary design goal is <strong>keep it simple</strong>. This is not a
+programming course, but rather an opportunity to get involved in and launch an
+open-source project. As such, stay focused on the learning and not on the
+feature set. The other primary goal for this product is to make the product as
+easy-to-use as possible. This may well mean eschewing features in favor of
+simple, straightforward design and user interface. That's a good thing. Enjoy
+it.</p>
 
-        <h2 id="case_study_dr_jablowme">Case Study: Dr. Jablowme</h2>
+<h2>Case Study: Dr. Jablowme</h2>
 
-        <p>Dr. Jablowme is a professor of occult studies at Duke University. For his OS
-        118 course, students are required to analyze the internals of the Windows XP
-        kernel, and, leveraging what they learned in class about conjuring demons from
-        beyond the grave, cause a copy of Windows to materialize spontaneously in thin
-        air. This demonstration must be performed in front of Dr. Jablowme during a
-        period of his day when he is available to deal with the "Lesser Minds" of
-        undergraduate students. To enable students to do this, Dr. Jablowme sits
-        himself in front of his Apple Macintosh LC III, fires up Netscape Navigator
-        3.2, and navigates to the site where his department's copy of GAPPy is housed.</p>
+<p>Dr. Jablowme is a professor of occult studies at Duke University. For his OS
+118 course, students are required to analyze the internals of the Windows XP
+kernel, and, leveraging what they learned in class about conjuring demons from
+beyond the grave, cause a copy of Windows to materialize spontaneously in thin
+air. This demonstration must be performed in front of Dr. Jablowme during a
+period of his day when he is available to deal with the "Lesser Minds" of
+undergraduate students. To enable students to do this, Dr. Jablowme sits
+himself in front of his Apple Macintosh LC III, fires up Netscape Navigator
+3.2, and navigates to the site where his department's copy of GAPPy is housed.</p>
 
-        <p>Upon reaching the site, Dr. Jablowme is asked for a username and password. He
-        dutifully types in BUFFY and TOH_OS_SI, respectively, then clicks "Login."
-        In a moment, he is presented with his main screen. It is divided into three
-        columns. In the rightmost column is a list of all upcoming appointments
-        scheduled in the system for the next three days, along with which class and
-        assignment it is for. Slots that he has made himself available for that are
-        not yet full are also listed as being reserved but open. Clicking on any of
-        these appointments or reserved times would take him to a screen where he could
-        reopen the appointment (meaning that students would lose their reservation) or
-        break the appointment entirely, removing it from the list of available meeting
-        times. The middle column is currently blank.</p>
+<p>Upon reaching the site, Dr. Jablowme is asked for a username and password. He
+dutifully types in BUFFY and TOH_OS_SI, respectively, then clicks "Login."
+In a moment, he is presented with his main screen. It is divided into three
+columns. In the rightmost column is a list of all upcoming appointments
+scheduled in the system for the next three days, along with which class and
+assignment it is for. Slots that he has made himself available for that are
+not yet full are also listed as being reserved but open. Clicking on any of
+these appointments or reserved times would take him to a screen where he could
+reopen the appointment (meaning that students would lose their reservation) or
+break the appointment entirely, removing it from the list of available meeting
+times. The middle column is currently blank.</p>
 
-        <p><img src="profhome.png" alt="Professor's Home Screen" title="" /></p>
+<p><img src="profhome.png" alt="Professor's Home Screen"/></p>
 
-        <p>Dr. Jablowme clicks on his "Occult Studies" class in the leftmost column. The
-        middle column suddenly fills up with a list of demos. Because Dr. Jablowme has
-        not yet created a demo for students to demonstrate their ability to create the
-        undead, he clicks the "Add Demo" link at the bottom of the middle column. In
-        the next screen, he is prompted to name the demo period. He names it "Raising
-        Undead." Below the text field asking for his name are two buttons marked
-        "Cancel" and "Continue." He clicks the "Continue" button.</p>
+<p>Dr. Jablowme clicks on his "Occult Studies" class in the leftmost column. The
+middle column suddenly fills up with a list of demos. Because Dr. Jablowme has
+not yet created a demo for students to demonstrate their ability to create the
+undead, he clicks the "Add Demo" link at the bottom of the middle column. In
+the next screen, he is prompted to name the demo period. He names it "Raising
+Undead." Below the text field asking for his name are two buttons marked
+"Cancel" and "Continue." He clicks the "Continue" button.</p>
 
-        <p>Next, Dr. Jablowme is asked to list times that he is available. There is a
-        single text field, to the right of which is a small calendar image that brings
-        up a calendar, and to the right of that a button marked "Add." Dr. Jablowme
-        remembers that the assignment's due on the 8th of November and likes to get
-        started early, so he types in "9 November 2005 2:55 PM" and then hits the
-        "Add" button. Now, in an area just below the text box, he sees the text
-        "Wednesday, November 9, at 2:55 PM". Oops; Dr. Jablowme always gets totally
-        shitfaced on Tuesday. He won't be able to begin grading on Wednesday. He
-        clicks a small trash can next to the time, deleting it from his potential
-        appointments. He now clicks the calendar widget and selects the 10th of
-        November, a Thursday. He clicks Add again, and now a good time is shown. Dr.
-        Jablowme repeats the process until he's created nearly a dozen potential
-        appointment times.</p>
+<p>Next, Dr. Jablowme is asked to list times that he is available. There is a
+single text field, to the right of which is a small calendar image that brings
+up a calendar, and to the right of that a button marked "Add." Dr. Jablowme
+remembers that the assignment's due on the 8th of November and likes to get
+started early, so he types in "9 November 2005 2:55 PM" and then hits the
+"Add" button. Now, in an area just below the text box, he sees the text
+"Wednesday, November 9, at 2:55 PM". Oops; Dr. Jablowme always gets totally
+shitfaced on Tuesday. He won't be able to begin grading on Wednesday. He
+clicks a small trash can next to the time, deleting it from his potential
+appointments. He now clicks the calendar widget and selects the 10th of
+November, a Thursday. He clicks Add again, and now a good time is shown. Dr.
+Jablowme repeats the process until he's created nearly a dozen potential
+appointment times.</p>
 
-        <p>On the right side of the screen is a button marked "Cancel," a button marked
-        "Go Back," and another marked "Finish." Dr. Jablowme clicks Finish. He is now
-        returned to his home screen; a message at the top says, "Appointments
-        Created!" Dr. Jablowme smiles serenely, gets up, and returns to his previous
-        task of trying to find his eye of newt.</p>
+<p>On the right side of the screen is a button marked "Cancel," a button marked
+"Go Back," and another marked "Finish." Dr. Jablowme clicks Finish. He is now
+returned to his home screen; a message at the top says, "Appointments
+Created!" Dr. Jablowme smiles serenely, gets up, and returns to his previous
+task of trying to find his eye of newt.</p>
 
-        <h2 id="case_study_larry_putz_mcclanahan">Case Study: Larry Putz McClanahan</h2>
+<h2>Case Study: Larry Putz McClanahan</h2>
 
-        <p>Larry is fifth-year sophomore at Duke University and a student in Dr.
-        Jablowme's course of occult studies. For his Windows-conjuring project, he has
-        opted to team up with Samantha Stevens and Genie Nelson. All three of them
-        will be demoing at the same time. Because they have not yet made an
-        appointment with Dr. Jablowme, Larry sits down at his homebuilt Pentium 9 with
-        liquid-oxygen cooling systems, logs into a bootlegged alpha copy of Mac OS XI
-        for Intel boxen, and uses his nightly build of Flock to go to
-        http://occult.duke.edu/gappy.</p>
+<p>Larry is a sophomore at Duke University and a student in a compsci course. Within that course, he is assigned to a group with two other people. That group has a single login in the system.</p>
 
-        <p>Once logged in, Larry sees a much simpler screen than Dr. Jablowme: in the
-        center of the screen is a list of his upcoming demos, along with what class
-        they are for, which demo it is, and who his partners are. At the top of the
-        list, though, Larry sees in white text on a red background, "You have one
-        unscheduled demo. Click here to schedule." He clicks it.</p>
+<p>When the group wants to sign up for an appointment, they sit down in front of a computer and someone signs in using their group id and password.</p>
 
-        <p>On the next screen, Larry sees, little to his surprise, that he is setting up
-        a demo to show his possessed Windows box. The screen is labeled "Select Group Members." In two columns on the left-side of the screen, the program presents Larry with a list of all people in his class. Larry begins clicking names; as he does so, they form a list on the right side of the screen. At one point, Larry accidentally clicks the name "Micky Mouse." In a red box at the top, the screen suddenly says, "Micky could not be added because he is in another group." Larry sighs, annoyed, but now clicks on the right name. Once he has selected all the members of his group, he clicks the "Next" button.</p>
+<p>Once logged in, they will be presented with a list of possible project demos that they can sign up for. Remember, the group login is tied to a specific class. There are multiple projects within each class, though. Generally speaking, a group will only sign up for one demo period per project.</p>
 
-        <p>Larry now sees a list of open demo slots. He clicks the one he wants and pushes next. He is asked via  JavaScript popup to confirm his selection. He confirms it, after which he is taken back to his home screen. The appointment he just made is now listed, and a moment later, he and all other group members receive an email confirming their appointment.</p>
+<p>The group members select the project they want from a drop-down menu with a list of names, and click a button to proceed to the next screen. On this screen, there will be a list of possible demo times. Each will display a date, time, and the name of the TA or professor available at that time. There will be a radio button beside each option. To schedule a demo, the group selects one of the times and presses a submit button, giving them a confirmation page.</p>
 
-        <h2 id="licenses">Licenses</h2>
+<p>Alternately, if the group has already signed up for a demo for that project, they will get a page telling them this when they select the project from the drop-down menu. They will then be presented with the option of cancelling this appointment so they can go back and schedule another.</p>
 
-        <p>The license for this project will initially be the <a href="http://www.gnu.org/copyleft/gpl.html" title="GNU General Public License">GPL</a>, although the fact
-        that all copyright holders are trivially available ensures that we can change
-        that later in the project if we wish. In particular, we likely want to examine
-        at least the <a href="http://www.opensource.org/licenses/bsd-license.php" title="Berkeley System Design License">BSD</a> license.</p>
+<p>When all this is done, the group can log out by clicking a "log out" button present on all of the pages, thus gaining a false sense of security since it doesn't really do anything.</p>
 
-        <h2 id="software_architecture">Software Architecture</h2>
+<h2>Licenses</h2>
 
-        <p>In order to allow us to complete this project in the next month, we will be
-        using a Python-based web framework called Django. Django provides (relatively)
-        transparent persistence, plus robust user management and administration
-        interfaces. These should not be reinvented. The application should also follow
-        the rigid model-view-controller (MVC) interface encouraged by Django.</p>
+<p>The license for this project will initially be the <a href="http://www.gnu.org/copyleft/gpl.html" title="GNU General Public License">GPL</a>, although the fact
+that all copyright holders are trivially available ensures that we can change
+that later in the project if we wish. In particular, we likely want to examine
+at least the <a href="http://www.opensource.org/licenses/bsd-license.php" title="Berkeley System Design License">BSD</a> license.</p>
 
-        <p>All remaining architectural decisions are yours. Once you all have come to a
-        conclusion, update this specification.</p>
+<h2>Software Architecture</h2>
 
-        <h2 id="version_2_features">Version 2 Features</h2>
+<p>In order to allow us to complete this project in the next month, we will be
+using a Python-based web framework called Django. Django provides (relatively)
+transparent persistence, plus robust user management and administration
+interfaces. These should not be reinvented. The application should also follow
+the rigid model-view-controller (MVC) interface encouraged by Django.</p>
 
-        <p>The following are features that would be nice to have, but can safely be
-        postponed to version two and still leave us with a working, useful product.</p>
+<p>All remaining architectural decisions are yours. Once you all have come to a
+conclusion, update this specification.</p>
 
-        <ol>
-        <li>The ability for group members to list their individual schedules and
-         set up appointments specific to their individual groups.</li>
-        <li>Leveraging the above to provide automatic appointment proposals and
-         potentially assignments</li>
-        </ol>
+<h2>Version 2 Features</h2>
 
-    </body>
+<p>The following are features that would be nice to have, but can safely be
+postponed to version two and still leave us with a working, useful product.</p>
+
+<ol>
+<li>The ability for group members to list their individual schedules and
+ set up appointments specific to their individual groups.</li>
+<li>Leveraging the above to provide automatic appointment proposals and
+ potentially assignments</li>
+</ol>
+  </body>
 </html>
