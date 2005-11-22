@@ -1,0 +1,67 @@
+body
+{
+	text-align:center;
+}
+
+#gappy_logo
+{
+	padding-bottom:10px;
+	padding-top:10px;
+}
+
+h1
+{
+	background:rgb(222,193,205);
+	color:#000000;
+	font-size:medium;
+}
+
+#login
+{
+	background:rgb(222,193,205);
+	border: thin solid rgb(53,148,35);
+	margin-bottom:50px;
+	margin-left:auto;
+	margin-right:auto;
+	padding-bottom:10px;
+	padding-top:10px;
+	width:425px;;
+}
+
+.input_row
+{
+    text-align:center;
+	padding-bottom:5px;
+}
+
+.input_row .label
+{
+	color:#005500;
+	font-weight:bold;
+	padding-left:10px;
+	padding-right:10px;
+	text-align:right;
+}
+
+.input_row .input
+{
+	text-align:left;
+}
+
+.input_row .input input 
+{
+	background: url(input_box_bg.gif) top left repeat-x;
+	border-width:1px;
+	border-style: solid;
+	border-bottom-color: #8bbc82;
+	border-left-color: rgb(53,148,35);
+	border-right-color: #8bbc82;
+	border-top-color: rgb(53,148,35);
+	color:#005500;
+	padding-left:5px;
+}
+
+#timestamp
+{
+	font-family: monospace, courier, sans-serif;
+}
