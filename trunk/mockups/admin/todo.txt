@@ -1,0 +1,11 @@
+login page:
+	-add "what is this" link
+admin page:
+	-fix bug where heights of demos and classes aren't equal
+	-make bg of inputs more pronounced/ better border
+	-javascript for making demos appear dynamically
+	-css/javascript for highlighting classes 
+add make group page
+update spec
+create trashcan logo
+make tops of non-login page prettier
