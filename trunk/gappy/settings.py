@@ -60,6 +60,7 @@ ROOT_URLCONF = 'gappy.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates".
+    os.path.join(os.getcwd(), "templates")
 )
 
 INSTALLED_APPS = (

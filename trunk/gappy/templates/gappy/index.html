@@ -1,0 +1,24 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<title>Welcome to GAPPy</title>
+	<link rel="stylesheet" TYPE="text/css" HREF="style.css" />
+</head>
+<body>
+{% if perms.gappy %}
+{% if perms.gappy.can_set_appointment %}
+<p>You are already logged in and should go to <a href="instructor/">your homepage</a>.</p>
+{% else %}
+{% if perms.gappy.can_choose_appointment %}
+<p>You are already logged in and should go to <a href="group/">your homepage</a>.</p>
+{% else %}
+<p>You are logged in but don't seem to have any rights.</p>
+{% endif %}
+{% endif %}
+{% else %}
+<p>You are not logged in.</p>
+{% endif %}
+</body>
+</html>
